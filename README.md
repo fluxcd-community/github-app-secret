@@ -41,7 +41,7 @@ This secret will be mounted as a volume and used by `gh-app-secret`.
     ...
     containers:
         - name: gh-app-secret
-        args:
+          args:
             - "-v=3"
             - --privateKeyPath=/etc/secret-volume/privatekey.pem
             - --appID=<app-id>
