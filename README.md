@@ -10,6 +10,11 @@ application that needs Github app based authentication.
 
 ## Instructions
 
+⚠️ __WARNING:__ Please make sure that the system time where this program runs is
+up-to-date. The token generation requests contain expiry time. If the expiry
+time used in the request is in the past, token generation would fail with **401
+Unauthorized** error.
+
 Create a new Github app with the appropriate permissions, generate a private key
 for the app and install the app in the target repositories. [Refer the official
 docs](https://docs.github.com/en/developers/apps/building-github-apps/authenticating-with-github-apps#accessing-api-endpoints-as-a-github-app)
