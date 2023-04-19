@@ -3,7 +3,7 @@
 Generate Github app auth token and write it into a Kubernetes Secret and refresh
 it periodically.
 
-The application `./cmd/gh-app-secret` takes Github app private key, app ID, 
+The application `./cmd/github-app-secret` takes Github app private key, app ID,
 installation ID and a secret name, and generates an auth token and writes it to
 a Kubernetes Secret with the given secret name. This can be used by any
 application that needs Github app based authentication.
@@ -36,16 +36,16 @@ Put the private key in a Kubernetes Secret with
 $ kubectl create secret generic github-app-private-key --from-file=privatekey.pem=/path-to-private-key.pem
 ```
 
-This secret will be mounted as a volume and used by `gh-app-secret`.
+This secret will be mounted as a volume and used by `github-app-secret`.
 
-`gh-app-secret` is run as a Kubernetes CronJob. Modify the manifests from
+`github-app-secret` is run as a Kubernetes CronJob. Modify the manifests from
 `./deploy` directory, adding the parameters collected above as argument to the
-`gh-app-secret` container. For example:
+`github-app-secret` container. For example:
 
 ```yaml
     ...
     containers:
-        - name: gh-app-secret
+        - name: github-app-secret
           args:
             - "-v=3"
             - --privateKeyPath=/etc/secret-volume/privatekey.pem
@@ -59,7 +59,7 @@ Update the CronJob schedule depending on the needs, ensuring that the token gets
 refreshed before expiry.
 
 Make sure that the manifests in `./deploy/rbac.yaml`, which provide
-`gh-app-secret` the necessary permissions it needs to create and update the
+`github-app-secret` the necessary permissions it needs to create and update the
 Secret, are applied along with the CronJob manifest.
 
 For cloning git repositories, the secret of type `git` can be used. This is the
@@ -67,7 +67,7 @@ default type of Secret. It creates secret data with `username` field
 `x-access-token` as [required by Github for http based clone](https://docs.github.com/en/developers/apps/building-github-apps/authenticating-with-github-apps#http-based-git-access-by-an-installation).
 
 For just the auth token, the secret of type `plain` can be used. This can be
-configured in `gh-app-secret` by using `--secretType` flag.
+configured in `github-app-secret` by using `--secretType` flag.
 
 For Github Enterprise, the Github API URL can be configured with `--apiURL`
 flag.

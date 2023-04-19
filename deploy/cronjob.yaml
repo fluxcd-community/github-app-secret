@@ -10,8 +10,8 @@ spec:
         spec:
           serviceAccountName: "github-app-secret"
           containers:
-            - name: gh-app-secret
-              image: darkowlzz/gh-app-secret
+            - name: github-app-secret
+              image: ghcr.io/fluxcd-community/github-app-secret
               imagePullPolicy: IfNotPresent
               args:
                 - "-v=3"
