@@ -1,4 +1,4 @@
-module github.com/darkowlzz/github-app-secret
+module github.com/fluxcd-community/github-app-secret
 
 go 1.19
 

@@ -15,7 +15,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/log"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 
-	gas "github.com/darkowlzz/github-app-secret"
+	gas "github.com/fluxcd-community/github-app-secret"
 )
 
 var logger = log.Log
