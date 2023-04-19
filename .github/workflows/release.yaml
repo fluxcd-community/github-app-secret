@@ -1,0 +1,58 @@
+name: release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'image tag prefix'
+        default: 'rc'
+        required: true
+
+permissions:
+  contents: read # git checkout
+  packages: write # ghcr access
+  id-token: write # sign images
+
+jobs:
+  ko-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.20'
+      - name: Prepare
+        id: prep
+        run: |
+          VERSION="${{ github.event.inputs.tag }}-${GITHUB_SHA::8}"
+          if [[ $GITHUB_REF == refs/tags/* ]]; then
+            VERSION=${GITHUB_REF/refs\/tags\//}
+          fi
+          echo "VERSION=${VERSION}" >> $GITHUB_OUTPUT
+      - uses: ko-build/setup-ko@v0.6
+        env:
+          KO_DOCKER_REPO: ghcr.io/${{ github.repository }}
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build
+        run: |
+          ko build --bare ./cmd/github-app-secret -t $TAG \
+            --platform linux/amd64,linux/arm64,linux/arm/v7 \
+            --image-refs refs.txt
+        env:
+          TAG: ${{ steps.prep.outputs.VERSION }}
+      - name: cosign-installer
+        uses: sigstore/cosign-installer@v3.0.2
+      - name: Sign images
+        env:
+          COSIGN_EXPERIMENTAL: 1
+        run: |
+          cat refs.txt | xargs -n1 cosign sign --yes
