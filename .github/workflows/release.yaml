@@ -50,7 +50,7 @@ jobs:
         env:
           TAG: ${{ steps.prep.outputs.VERSION }}
       - name: cosign-installer
-        uses: sigstore/cosign-installer@v3.0.5
+        uses: sigstore/cosign-installer@v3.1.1
       - name: Sign images
         env:
           COSIGN_EXPERIMENTAL: 1
